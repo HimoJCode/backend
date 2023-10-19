@@ -20,7 +20,7 @@ class CarouselItemsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
