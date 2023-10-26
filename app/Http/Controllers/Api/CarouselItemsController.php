@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Requests\CarouselItemRequest;
 
+
 class CarouselItemsController extends Controller
 {
     /**
@@ -25,7 +26,7 @@ class CarouselItemsController extends Controller
         $validated = $request->validated();
 
         $CarouselItem = CarouselItem::create($validated);
-           
+
         return $CarouselItem;
     }
 
@@ -39,9 +40,14 @@ class CarouselItemsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CarouselItemRequest $request, string $id)
     {
-        //
+        $validated = $request->validated();
+
+        $carouselItem  = CarouselItem::findOrFail($id);
+        $carouselItem->update($validated);
+
+        return $carouselItem;
     }
 
     /**
