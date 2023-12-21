@@ -12,19 +12,18 @@ class LetterController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Letter::all();
-    }
+        $letters = Letter::select('letters.sender', 'letters.created_at', 'letters.subject', 'letters.body');
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
+        if ($request->keyword) {
+            $letters->where(function ($query) use ($request) {
+                $query->where('letters.sender', 'like', '%' . $request->keyword . '%');
+            });
+        }
 
+        return $letters->get();
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -45,20 +44,19 @@ class LetterController extends Controller
         return Letter::findOrfail($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(LetterRequest $request, string $id)
     {
-        //
+        $validated = $request->validated();
+
+        $letter = Letter::findOrFail($id);
+
+        $letter->update($validated);
+
+        return $letter;
     }
 
     /**

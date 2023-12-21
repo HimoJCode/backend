@@ -3,7 +3,9 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\CarouselItemsController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\LetterController;
+use App\Http\Controllers\Api\PromptController;
 use App\Http\Controllers\Api\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +23,32 @@ use Illuminate\Support\Facades\Route;
 //Public APIs
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
 Route::post('/user', [UserController::class,  'store'])->name('user.store');
+
+Route::controller(LetterController::class)->group(function () {
+    Route::get('/letter',             'index');
+    Route::get('/letter/{id}',        'show');
+    Route::post('/letter',            'store');
+    Route::post('/letter/{id}',       'update');
+    Route::delete('/letter/{id}',     'destroy');
+});
+
+// Chat APIs
+Route::controller(PromptController::class)->group(function () {
+    Route::get('/prompts',                   'index');
+    Route::post('/prompts',                  'store');
+    Route::put('/prompts/{id}',               'update');
+});
+// Message APIs
+Route::controller(MessageController::class)->group(function () {
+    Route::get('/message',             'index');
+    Route::get('/message/{id}',        'show');
+    Route::post('/message',            'store');
+    Route::put('/message/{id}',        'update');
+    Route::delete('/message/{id}',     'destroy');
+});
+
+// User Selection
+Route::get('/user/selection', [UserController::class, 'selection']);
 
 //Private APIs
 Route::middleware(['auth:sanctum'])->group(function () {
@@ -44,15 +72,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/carousel/{id}',     'update');
         Route::delete('/carousel/{id}',   'destroy');
     });
-
-    Route::controller(LetterController::class)->group(function () {
-        Route::get('/letter',             'index');
-        Route::get('/letter/{id}',        'show');
-        Route::post('/letter',            'store');
-        Route::delete('/letter/{id}',     'destroy');
-    });
-
     //Specific Profile
-    Route::get('/profile/show', [ProfileController::class,  'show']);
+    Route::get('/profile/show',  [ProfileController::class,  'show']);
     Route::put('/profile/image', [ProfileController::class,  'image'])->name('user.image');
+
+    // Chat API
+    Route::delete('/prompts/{id}',      [PromptController::class, 'destroy']);
 });
